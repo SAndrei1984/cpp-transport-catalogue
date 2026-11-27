@@ -1,5 +1,3 @@
-#ifndef INPUT_READER_H
-#define INPUT_READER_H
 
 #pragma once
 
@@ -33,4 +31,3 @@ private:
     std::vector<CommandDescription> commands_;
 };
 
-#endif // INPUT_READER_H

@@ -1,13 +1,11 @@
-#include <QCoreApplication>
 #include <iostream>
 #include "input_reader.h"
 #include "stat_reader.h"
 
 using namespace std;
 
-int main(int argc, char *argv[])
+int main()
 {
-    QCoreApplication a(argc, argv);
 
     tansport_catalogue::TransportCatalogue catalogue;
 
@@ -32,5 +30,5 @@ int main(int argc, char *argv[])
         ParseAndPrintStat(catalogue, line, cout);
     }
 
-    return a.exec();
+    return 0;
 }

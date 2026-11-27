@@ -1,5 +1,3 @@
-#ifndef STAT_READER_H
-#define STAT_READER_H
 
 #pragma once
 
@@ -26,4 +24,3 @@ struct RequestDescription {
 void ParseAndPrintStat(const tansport_catalogue::TransportCatalogue& transport_catalogue, std::string_view request,
                        std::ostream& output);
 
-#endif // STAT_READER_H

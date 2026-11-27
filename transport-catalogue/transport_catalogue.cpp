@@ -1,5 +1,6 @@
 #include "transport_catalogue.h"
 #include <optional>
+#include <stdexcept>
 
 using namespace std;
 
@@ -8,7 +9,7 @@ namespace tansport_catalogue {
 void TransportCatalogue::AddStop(Stop& stop){
     stops_.push_back(std::move(stop));
     pointers_to_all_stops_[stops_.back().stop_name] = &stops_.back();
-    stop_info_[pointers_to_all_stops_[stops_.back().stop_name]] = {false, {}};
+    stop_info_[stops_.back().stop_name] = {};
 }
 
 void TransportCatalogue::AddRoute(Route& route) {
@@ -20,36 +21,41 @@ void TransportCatalogue::AddRoute(Route& route) {
 
     for(const auto& stop: unique_stops) {
         if(pointers_to_all_stops_.contains(stop)) {
-            stop_info_[pointers_to_all_stops_[stop]].stop_incl_in_routes = true;
-            stop_info_[pointers_to_all_stops_[stop]].routes_incl_stop.insert(routes_.back().route_name); // Adds to stop_info_ field "routes_incl_stop" over key pointer to Stop by stop name
+            stop_info_[stop].routes_incl_stop.insert(routes_.back().route_name);
         }
     }
 }
 
-const std::optional<Stop*> TransportCatalogue::GetStop(std::string_view stop_name) const {
-    if(pointers_to_all_stops_.count(stop_name) != 0) {
-        return pointers_to_all_stops_.at(stop_name);
+const Stop* TransportCatalogue::GetStop(std::string_view stop_name) const {
+    auto stop = pointers_to_all_stops_.find(stop_name);
+    if(stop != pointers_to_all_stops_.end()) {
+        return stop->second;
     }
-    return nullopt;
+    return nullptr;
 }
 
-const std::optional<Route*> TransportCatalogue::GetRoute(const std::string& route_name) const {
-    if(pointers_to_all_routes_.count(route_name) != 0) {
-        return pointers_to_all_routes_.at(route_name);
+const Route* TransportCatalogue::GetRoute(std::string_view route_name) const {
+    auto route = pointers_to_all_routes_.find(route_name);
+    if(route != pointers_to_all_routes_.end()) {
+        return route->second;
     }
-    return nullopt;
+    return nullptr;
 }
 
-const RouteInfo& TransportCatalogue::GetRouteInfo(const std::string& route_name) const {
-    return (*pointers_to_all_routes_.at(route_name)).route_info;
+RouteInfo TransportCatalogue::GetRouteInfo(std::string_view route_name) const {
+    const Route* route = GetRoute(route_name);
+    if(route != nullptr) {
+        return (*pointers_to_all_routes_.at(route_name)).route_info;
+    }
+    return RouteInfo();
 }
 
-const std::optional<StopInfo> TransportCatalogue::GetStopInfo(const std::string& stop_name) const {
-    std::optional<Stop*> value = GetStop(stop_name);
-    if(value.has_value()) {
-        return stop_info_.at(*value);
+const StopInfo& TransportCatalogue::GetStopInfo(std::string_view stop_name) const {
+    const Stop* stop = GetStop(stop_name);
+    if (stop == nullptr) {
+        throw std::out_of_range("Stop not found");
     }
-    return nullopt;
+    return stop_info_.at(stop_name);
 }
 
 }

@@ -1,6 +1,3 @@
-#ifndef GEO_H
-#define GEO_H
-
 #pragma once
 
 #include <cmath>
@@ -25,7 +22,5 @@ inline double ComputeDistance(Coordinates from, Coordinates to) {
     static const int kEarthRadius = 6371000;
     return acos(sin(from.lat * dr) * sin(to.lat * dr)
                 + cos(from.lat * dr) * cos(to.lat * dr) * cos(abs(from.lng - to.lng) * dr))
-           * kEarthRadius;
+        * kEarthRadius;
 }
-
-#endif // GEO_H

@@ -1,6 +1,3 @@
-#ifndef TRANSPORT_CATALOGUE_H
-#define TRANSPORT_CATALOGUE_H
-
 #pragma once
 
 #include <unordered_map>
@@ -17,7 +14,6 @@ namespace tansport_catalogue {
 
 struct Stop {
     std::string stop_name;
-    //std::pair<double, double> coordinates;
     Coordinates coordinates;
 };
 
@@ -34,28 +30,24 @@ struct Route {
 };
 
 struct StopInfo {
-    bool stop_incl_in_routes = false;
     std::set<std::string_view> routes_incl_stop;
-
 };
 
 class TransportCatalogue {
-    public:
+public:
     void AddStop(Stop& stop);
     void AddRoute(Route& route);
-    const std::optional<Stop*> GetStop(std::string_view stop_name) const;          // сделать private?
-    const std::optional<Route*> GetRoute(const std::string& route_name) const;                  // сделать private?
-    const RouteInfo& GetRouteInfo(const std::string& route_name) const;
-    const std::optional<StopInfo> GetStopInfo(const std::string& stop_name) const;
+    const Stop* GetStop(std::string_view stop_name) const;
+    const Route* GetRoute(std::string_view route_name) const;
+    RouteInfo GetRouteInfo(std::string_view route_name) const;
+    const StopInfo& GetStopInfo(std::string_view stop_name) const;
 
-    private:
+private:
         std::deque<Stop> stops_;
-        std::unordered_map<std::string_view, Stop*> pointers_to_all_stops_;
+        std::unordered_map<std::string_view, const Stop*> pointers_to_all_stops_;
         std::deque<Route> routes_;
-        std::unordered_map<std::string_view, Route*> pointers_to_all_routes_;
-        std::unordered_map<Stop*, StopInfo> stop_info_;
+        std::unordered_map<std::string_view, const Route*> pointers_to_all_routes_;
+        std::unordered_map<std::string_view, StopInfo> stop_info_;
 };
 
 }
-
-#endif
